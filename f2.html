@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning Modules</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    .module-header {
+      background-color: #343a40;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+    .resource-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-left: 4px solid #dc3545; /* Red by default */
+    }
+    .resource-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .resource-card.video {
+      border-left-color: #dc3545; /* Red */
+    }
+    .resource-card.article {
+      border-left-color: #0d6efd; /* Blue */
+    }
+    .badge-type {
+      font-size: 0.7em;
+      margin-left: 8px;
+    }
+    .modal iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+    }
+    @media (max-width: 768px) {
+      .modal iframe {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center mb-4">Machine Learning Modules</h1>
+    
+    <div id="modules-container"></div>
+  </div>
+
+  <!-- Video Modal -->
+  <div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="videoModalTitle">Video</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="video-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Machine Learning resources data
+    const modulesData = {
+      "Week 1: Fundamentals": [
+        { title: "Introduction to Machine Learning", type: "video", url: "https://www.youtube.com/embed/ukzFI9rgwfU" },
+        { title: "ML Basics - Scikit-learn Documentation", type: "article", url: "https://scikit-learn.org/stable/tutorial/basic/tutorial.html" },
+        { title: "Mathematics for Machine Learning", type: "video", url: "https://www.youtube.com/embed/gI0X1MNOlR0" }
+      ],
+      "Week 2: Supervised Learning": [
+        { title: "Linear Regression Explained", type: "article", url: "https://towardsdatascience.com/linear-regression-explained-1b36f97b7572" },
+        { title: "Classification Algorithms Tutorial", type: "video", url: "https://www.youtube.com/embed/LDRbO9a6XPU" },
+        { title: "Decision Trees Guide", type: "article", url: "https://medium.com/swlh/decision-trees-explained-3ec41652fa44" }
+      ],
+      "Week 3: Neural Networks": [
+        { title: "Neural Networks Demystified", type: "video", url: "https://www.youtube.com/embed/aircAruvnKk" },
+        { title: "TensorFlow Beginner Tutorial", type: "article", url: "https://www.tensorflow.org/tutorials/quickstart/beginner" },
+        { title: "CNN Explained", type: "video", url: "https://www.youtube.com/embed/YRhxdVk_sIs" }
+      ],
+      "Week 4: Advanced Topics": [
+        { title: "Natural Language Processing Guide", type: "article", url: "https://towardsdatascience.com/natural-language-processing-nlp-for-machine-learning-d44498845d5b" },
+        { title: "Reinforcement Learning Tutorial", type: "video", url: "https://www.youtube.com/embed/JgvyzIkgxF0" }
+      ]
+    };
+
+    // Initialize the modal
+    const videoModal = new bootstrap.Modal(document.getElementById('videoModal'));
+
+    // Render modules
+    function renderModules() {
+      const container = document.getElementById('modules-container');
+      
+      for (const [moduleName, resources] of Object.entries(modulesData)) {
+        const moduleElement = document.createElement('div');
+        moduleElement.className = 'module mb-4';
+        
+        // Module header
+        const header = document.createElement('div');
+        header.className = 'module-header';
+        header.textContent = moduleName;
+        moduleElement.appendChild(header);
+        
+        // Resources container
+        const resourcesContainer = document.createElement('div');
+        
+        // Add each resource
+        resources.forEach(resource => {
+          const resourceElement = document.createElement('div');
+          resourceElement.className = `resource-card ${resource.type}`;
+          
+          const title = document.createElement('span');
+          title.textContent = resource.title;
+          
+          const badge = document.createElement('span');
+          badge.className = `badge bg-${resource.type === 'video' ? 'danger' : 'primary'} badge-type`;
+          badge.textContent = resource.type;
+          
+          resourceElement.appendChild(title);
+          resourceElement.appendChild(badge);
+          
+          // Add click handler
+          resourceElement.addEventListener('click', () => {
+            if (resource.type === 'video') {
+              document.getElementById('videoModalTitle').textContent = resource.title;
+              document.getElementById('video-container').innerHTML = `
+                <iframe src="${resource.url}" allowfullscreen></iframe>
+              `;
+              videoModal.show();
+            } else {
+              window.open(resource.url, '_blank');
+            }
+          });
+          
+          resourcesContainer.appendChild(resourceElement);
+        });
+        
+        moduleElement.appendChild(resourcesContainer);
+        container.appendChild(moduleElement);
+      }
+    }
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', renderModules);
+  </script>
+</body>
+</html>
